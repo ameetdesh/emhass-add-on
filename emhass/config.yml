@@ -34,10 +34,12 @@ schema:
   hass_url: "str?" #optional
   long_lived_token: "password?" #optional
   emhass_api_token: "password?" #optional
-  participant_token: "password?" #optional, the token a coordinator presents to this EMHASS
+  participant_token: "password(16,)?" #optional, the token a coordinator presents to this EMHASS (16 characters at least)
   remote_solver_tokens: # the tokens of the remote solvers the site names, each under its token_secret
-    - name: "match(^[a-z][a-z0-9_]{0,31}$)"
-      token: "password"
+    # a token_secret EMHASS accepts: not one of its own secrets (emhass/coordinator/site.py's
+    # _SITE_RESERVED_SECRETS; keep the two in step)
+    - name: "match(^(?!(?:alt|altitude|emhass_api_token|hass_url|influxdb_password|influxdb_username|lat|latitude|lon|long_lived_token|longitude|participant_token|remote_tokens|server_ip|solar_forecast_kwp|solcast_api_key|solcast_rooftop_id|time_zone|victoriametrics_password|victoriametrics_username)$)[a-z][a-z0-9_]{0,31}$)"
+      token: "password(16,)"
   data_path: "list(default|/config|/data|/share|/share/emhass)?" #optional
   config_path: "list(default|/config/config.json|/share/config.json|/share/emhass/config.json)?" #optional
   time_zone: "match((\\w+)?(\\/)(\\w+))?" #optional
